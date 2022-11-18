@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:treefuckers/enums/notetype.dart';
 import 'package:treefuckers/repositories/user.dart';
 
-import 'ar.dart';
-
 class Note {
   NoteType type;
   UserRepository author;

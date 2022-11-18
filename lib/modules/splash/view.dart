@@ -16,11 +16,19 @@ class SplashView extends StatefulHookConsumerWidget {
 class _SplashViewState extends ConsumerState<SplashView> {
   @override
   Widget build(BuildContext context) {
-    return ref.watch(awaitingUsernameProvider).when(
-        data: (data) =>
-            data == UserRepository.empty() ? AuthView() : HomeView(),
-        error: (obj, trace) => Center(
-              child: Text("$obj + $trace"),
+    return ref.watch(awaitingInitializerProvider).when(
+        data: (data) {
+          if (!data['isServerConnected']!)
+            return Scaffold(body: Center(child: Text("no treeserver found")));
+          if (!data['isUserLoaded']!)
+            return AuthView();
+          else
+            return HomeView();
+        },
+        error: (obj, trace) => Scaffold(
+              body: Center(
+                child: Text("$obj + $trace"),
+              ),
             ),
         loading: () => Scaffold(
               body: Center(

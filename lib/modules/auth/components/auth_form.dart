@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:treefuckers/main.dart';
+import 'package:http/http.dart' as http;
 import 'package:treefuckers/repositories/user.dart';
+import 'package:treefuckers/utils/connect.dart';
 
 import '../../home/view.dart';
 
@@ -62,15 +67,28 @@ class AuthForm extends HookConsumerWidget {
       TextEditingController usernameController,
       TextEditingController passwordController) async {
     if (authFormKey.currentState!.validate()) {
-      ref.watch(userProvider.notifier).update(
-          updated: UserRepository(
-              data: User(
-                  id: "01",
-                  username: usernameController.text,
-                  age: -1,
-                  password: passwordController.text)));
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => HomeView()));
+      try {
+        var res =
+            await http.post(Uri.parse(Connect.serverAdress! + "/users"), body: {
+          "username": usernameController.text,
+          "password": passwordController.text,
+          "intent": "login"
+        });
+        if (res.statusCode == 200) {
+          ref.watch(userProvider.notifier).update(
+              updated: UserRepository(
+                  data: User(
+                      id: "01",
+                      username: usernameController.text,
+                      age: -1,
+                      password: passwordController.text)));
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => HomeView()));
+        }
+      } catch (e) {
+        log("error", error: e);
+        return;
+      }
     }
   }
 

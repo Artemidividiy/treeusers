@@ -1,15 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:treefuckers/main.dart';
-import 'package:treefuckers/repositories/user.dart';
+import 'dart:convert';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:numberpicker/numberpicker.dart';
+
+import 'package:treefuckers/repositories/user.dart';
+import 'package:http/http.dart' as http;
+import '../../../utils/connect.dart';
 import '../../home/view.dart';
 
 class RegisterView extends HookConsumerWidget {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordConfirmController = TextEditingController();
+  TextEditingController ageController = TextEditingController(text: "18");
   final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
   PageController controller;
   RegisterView({super.key, required this.controller});
@@ -51,11 +57,18 @@ class RegisterView extends HookConsumerWidget {
               controller: passwordConfirmController,
             ),
           ),
+          NumberPicker(
+              value: int.parse(ageController.text),
+              maxValue: 99,
+              minValue: 1,
+              onChanged: (newAge) => ageController.text = newAge.toString()),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextButton(
-                onPressed: () =>
-                    auth(context, ref, usernameController, passwordController),
+                onPressed: () => register(
+                      context,
+                      ref,
+                    ),
                 child: const Text("register")),
           ),
           TextButton(
@@ -68,21 +81,35 @@ class RegisterView extends HookConsumerWidget {
     );
   }
 
-  Future<void>? auth(
-      BuildContext context,
-      WidgetRef ref,
-      TextEditingController usernameController,
-      TextEditingController passwordController) async {
+  Future<void>? register(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     if (registerFormKey.currentState!.validate()) {
-      ref.watch(userProvider.notifier).update(
-          updated: UserRepository(
-              data: User(
-                  id: "01",
-                  username: usernameController.text,
-                  age: -1,
-                  password: passwordController.text)));
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => HomeView()));
+      try {
+        var res = await http.post(Uri.parse("${Connect.serverAdress!}/users"),
+            body: json.encode({
+              "username": usernameController.text,
+              "password": passwordController.text,
+              "age": int.parse(ageController.text),
+              "passwordConfirmation": passwordConfirmController.text,
+              "intent": "register"
+            }),
+            headers: {'content-type': "application/json"});
+        if (res.statusCode == 200) {
+          ref.watch(userProvider.notifier).update(
+              updated: UserRepository(
+                  data: User(
+                      id: usernameController.text,
+                      username: usernameController.text,
+                      age: int.parse(ageController.text),
+                      password: passwordController.text)));
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => HomeView()));
+        }
+      } catch (e) {
+        log("error", error: e);
+      }
     }
   }
 

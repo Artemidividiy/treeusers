@@ -8,6 +8,8 @@ import 'package:treefuckers/modules/home/view.dart';
 import 'package:treefuckers/modules/splash/view.dart';
 import 'package:treefuckers/repositories/user.dart';
 
+import 'utils/connect.dart';
+
 // We create a "provider", which will store a value (here "Hello world").
 // By using a provider, this allows us to mock/override the value exposed.
 final awaitingUsernameProvider = FutureProvider<UserRepository>((_) async {
@@ -15,7 +17,29 @@ final awaitingUsernameProvider = FutureProvider<UserRepository>((_) async {
   return await Future.delayed(
       Duration(seconds: 3), () async => await UserRepository.fromStorage());
 });
+final awaitingServerConnectProvider = FutureProvider<bool>((ref) async {
+  await Connect.connect();
+  return Connect.serverAdress == null ? false : true;
+});
 
+final awaitingInitializerProvider =
+    FutureProvider<Map<String, bool>>((ref) async {
+  bool isServerConnected = false;
+  ref.watch(awaitingServerConnectProvider).when(
+      data: (data) => isServerConnected = data,
+      error: (obj, trace) => log("something went wrong", error: trace),
+      loading: () => log("loading"));
+
+  UserRepository userLoaded = UserRepository.empty();
+  ref.watch(awaitingUsernameProvider).when(
+      data: (data) => userLoaded = data,
+      error: (obj, trace) => log("something went wrong", error: trace),
+      loading: () => log("loading"));
+  return {
+    "isServerConnected": isServerConnected,
+    "isUserLoaded": userLoaded != UserRepository.empty()
+  };
+});
 // final usernameStateProvider =
 //     StateNotifierProvider<UserNotifier, UserRepository>((ref) {
 //   return UserNotifier(UserRepository.empty());

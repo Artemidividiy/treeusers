@@ -16,7 +16,12 @@ dependencies:
   flutter_hooks: ^0.18.5+1
   freezed: ^2.2.1
   hooks_riverpod: ^2.1.1
+  
+  http: ^0.13.5
+  lan_scanner: ^3.5.0
+  numberpicker: ^2.1.1
   shared_preferences: ^2.0.15
+  
   
   
 
