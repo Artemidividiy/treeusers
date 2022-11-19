@@ -38,7 +38,7 @@ class HomeView extends HookConsumerWidget {
                   onPressed: () => createNote(context),
                   label: Text("Create Note")),
               body: RefreshIndicator(
-                onRefresh: update,
+                onRefresh: () => ref.refresh(awaitingNotesProvider.future),
                 child: ListView.builder(
                   itemCount: data.data.length,
                   itemBuilder: (context, index) => GestureDetector(
@@ -66,9 +66,5 @@ class HomeView extends HookConsumerWidget {
   void createNote(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => NoteView.create()));
-  }
-
-  Future<void> update() async {
-    await NoteRepository.get();
   }
 }
