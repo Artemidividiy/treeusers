@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:treefuckers/main.dart';
+import 'package:treefuckers/modules/home/components/note_tile.dart';
 import 'package:treefuckers/repositories/note.dart';
 import 'package:treefuckers/repositories/user.dart';
 
@@ -40,17 +41,11 @@ class HomeView extends HookConsumerWidget {
               body: RefreshIndicator(
                 onRefresh: () => ref.refresh(awaitingNotesProvider.future),
                 child: ListView.builder(
-                  itemCount: data.data.length,
-                  itemBuilder: (context, index) => GestureDetector(
-                    onTap: () async => await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                NoteView.read(data.data[index]))),
-                    child: Container(
-                      child: Text(data.data[index].textData ?? "not a text"),
-                    ),
-                  ),
-                ),
+                    itemCount: data.data.length,
+                    itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: NoteTile(note: data.data[index]),
+                        )),
               ));
         },
         error: (obj, trace) => Scaffold(

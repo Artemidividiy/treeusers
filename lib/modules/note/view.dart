@@ -79,6 +79,7 @@ class _NoteCreateView extends ConsumerWidget {
     if (noteFormKey.currentState!.validate()) {
       try {
         Note note = Note(
+            createdAt: DateTime.now(),
             id: "posting",
             author: ref.read(userProvider.notifier).data,
             type: ref.read(_choiceChip.notifier).state == 0
@@ -118,15 +119,45 @@ class __NoteReadViewState extends ConsumerState<_NoteReadView> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            "Note:",
+            style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+          ),
           Text(widget.note.textData!),
           Divider(),
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
             Text(
               "by: ${widget.note.author.data.username}",
             ),
-          ])
+          ]),
+          Row(mainAxisAlignment: MainAxisAlignment.end,
+              // mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "created At: ",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(generatedCreatedAt())
+              ]),
         ],
       ),
     );
+  }
+
+  String generatedCreatedAt() {
+    String toTwoSignes(String value) {
+      if (value.length == 1) return "0$value";
+      return value;
+    }
+
+    DateTime dt = widget.note.createdAt;
+    String target =
+        "${toTwoSignes(dt.month.toString())}:${toTwoSignes(dt.day.toString())}";
+
+    if (dt.year == DateTime.now().year) {
+      target =
+          "${dt.year}:$target:${toTwoSignes(dt.hour.toString())}:${toTwoSignes(dt.minute.toString())}";
+    }
+    return target;
   }
 }

@@ -60,6 +60,7 @@ class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: SplashView(),
       theme: FlexThemeData.light(
         scheme: FlexScheme.outerSpace,

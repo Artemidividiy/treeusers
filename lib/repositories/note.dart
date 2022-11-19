@@ -17,12 +17,13 @@ class Note {
   UserRepository author;
   String? textData;
   File? arData;
-
+  DateTime createdAt;
   Note(
       {required this.id,
       required this.author,
       this.textData,
       this.arData,
+      required this.createdAt,
       this.type = NoteType.String})
       : assert((textData == null && arData != null) ||
             (type == NoteType.String && textData != null) ||
@@ -33,14 +34,15 @@ class Note {
       UserRepository? author,
       String? textData,
       File? arData,
-      NoteType? type}) {
+      NoteType? type,
+      DateTime? createdAt}) {
     return Note(
-      type: type ?? this.type,
-      id: id ?? this.id,
-      author: author ?? this.author,
-      textData: textData ?? this.textData,
-      arData: arData ?? this.arData,
-    );
+        type: type ?? this.type,
+        id: id ?? this.id,
+        author: author ?? this.author,
+        textData: textData ?? this.textData,
+        arData: arData ?? this.arData,
+        createdAt: createdAt ?? this.createdAt);
   }
 
   Map<String, dynamic> toMap() {
@@ -54,6 +56,7 @@ class Note {
 
   factory Note.fromMap(Map<String, dynamic> map) {
     return Note(
+        createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
         type: map['textData'] != null ? NoteType.String : NoteType.AR,
         id: map['id'] ?? '',
         author: UserRepository.fromMap(map['author']),
@@ -87,6 +90,7 @@ class Note {
   }
 
   factory Note.empty() => Note(
+      createdAt: DateTime.now(),
       id: "id",
       author: UserRepository.empty(),
       type: NoteType.String,
