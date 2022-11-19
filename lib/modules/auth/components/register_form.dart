@@ -11,6 +11,10 @@ import 'package:http/http.dart' as http;
 import '../../../utils/connect.dart';
 import '../../home/view.dart';
 
+final _ageStateProvider = StateProvider<int>((ref) {
+  return 18;
+});
+
 class RegisterView extends HookConsumerWidget {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -61,7 +65,10 @@ class RegisterView extends HookConsumerWidget {
               value: int.parse(ageController.text),
               maxValue: 99,
               minValue: 1,
-              onChanged: (newAge) => ageController.text = newAge.toString()),
+              onChanged: (newAge) {
+                ref.read(_ageStateProvider.notifier).state = newAge;
+                ageController.text = newAge.toString();
+              }),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextButton(

@@ -33,7 +33,7 @@ class UserRepository {
 
   factory UserRepository.fromMap(Map<String, dynamic> map) {
     return UserRepository(
-      data: User.fromMap(map['data']),
+      data: User.fromMap(map),
     );
   }
   factory UserRepository.empty() => UserRepository(data: User.empty());

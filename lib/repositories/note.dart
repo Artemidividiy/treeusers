@@ -1,19 +1,26 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:treefuckers/enums/notetype.dart';
+import 'package:treefuckers/modules/home/view.dart';
 import 'package:treefuckers/repositories/user.dart';
+import 'package:treefuckers/utils/connect.dart';
 
 class Note {
+  String id;
   NoteType type;
   UserRepository author;
   String? textData;
   File? arData;
+
   Note(
-      {required this.author,
+      {required this.id,
+      required this.author,
       this.textData,
       this.arData,
       this.type = NoteType.String})
@@ -21,12 +28,15 @@ class Note {
             (type == NoteType.String && textData != null) ||
             (type == NoteType.AR && arData != null));
 
-  Note copyWith({
-    UserRepository? author,
-    String? textData,
-    File? arData,
-  }) {
+  Note copyWith(
+      {String? id,
+      UserRepository? author,
+      String? textData,
+      File? arData,
+      NoteType? type}) {
     return Note(
+      type: type ?? this.type,
+      id: id ?? this.id,
       author: author ?? this.author,
       textData: textData ?? this.textData,
       arData: arData ?? this.arData,
@@ -35,18 +45,20 @@ class Note {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'author': author.toMap(),
       'textData': textData,
-      'arData': arData?.path,
+      'arData': arData?.path.toString(),
     };
   }
 
   factory Note.fromMap(Map<String, dynamic> map) {
     return Note(
-      author: UserRepository.fromMap(map['author']),
-      textData: map['textData'],
-      arData: map['arData'] != null ? map['arData'] : null,
-    );
+        type: map['textData'] != null ? NoteType.String : NoteType.AR,
+        id: map['id'] ?? '',
+        author: UserRepository.fromMap(map['author']),
+        textData: map['textData'],
+        arData: map['arData'] != null ? map['arData'] : null);
   }
 
   String toJson() => json.encode(toMap());
@@ -54,23 +66,31 @@ class Note {
   factory Note.fromJson(String source) => Note.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'Note(author: $author, textData: $textData, arData: $arData)';
+  String toString() {
+    return 'Note(id: $id, author: $author, textData: $textData, arData: $arData)';
+  }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
     return other is Note &&
+        other.id == id &&
         other.author == author &&
         other.textData == textData &&
         other.arData == arData;
   }
 
   @override
-  int get hashCode => author.hashCode ^ textData.hashCode ^ arData.hashCode;
+  int get hashCode {
+    return id.hashCode ^ author.hashCode ^ textData.hashCode ^ arData.hashCode;
+  }
+
   factory Note.empty() => Note(
-      author: UserRepository.empty(), type: NoteType.String, textData: "empty");
+      id: "id",
+      author: UserRepository.empty(),
+      type: NoteType.String,
+      textData: "empty");
 }
 
 class NoteRepository {
@@ -102,7 +122,7 @@ class NoteRepository {
   String toJson() => json.encode(toMap());
 
   factory NoteRepository.fromJson(String source) =>
-      NoteRepository.fromMap(json.decode(source));
+      NoteRepository.fromMap({"data": json.decode(source)});
 
   @override
   String toString() => 'NoteRepository(data: $data)';
@@ -117,10 +137,30 @@ class NoteRepository {
   @override
   int get hashCode => data.hashCode;
 
-  Future<void> push(BuildContext context) async {
-    try {} catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("something went wrong")));
+  factory NoteRepository.empty() => NoteRepository(data: []);
+
+  static Future<NoteRepository> get() async {
+    http.Response res =
+        await http.get(Uri.parse("${Connect.serverAdress!}/notes"));
+    return NoteRepository.fromJson(res.body);
+  }
+
+  Future<void> push(BuildContext context, Note note) async {
+    try {
+      var res = await http.post(Uri.parse(Connect.serverAdress! + "/notes"),
+          headers: {
+            "content-type": "application/json",
+          },
+          body: note.toJson());
+      if (res.statusCode == 200) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomeView()));
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("something went wrong")));
+      }
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

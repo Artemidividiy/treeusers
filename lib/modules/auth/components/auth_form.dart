@@ -11,6 +11,7 @@ import 'package:treefuckers/utils/connect.dart';
 
 import '../../home/view.dart';
 
+
 class AuthForm extends HookConsumerWidget {
   final GlobalKey<FormState> authFormKey = GlobalKey<FormState>();
   PageController controller;
@@ -68,12 +69,13 @@ class AuthForm extends HookConsumerWidget {
       TextEditingController passwordController) async {
     if (authFormKey.currentState!.validate()) {
       try {
-        var res =
-            await http.post(Uri.parse(Connect.serverAdress! + "/users"), body: {
-          "username": usernameController.text,
-          "password": passwordController.text,
-          "intent": "login"
-        });
+        var res = await http.post(Uri.parse(Connect.serverAdress! + "/users"),
+            body: json.encode({
+              "username": usernameController.text,
+              "password": passwordController.text,
+              "intent": "login"
+            }),
+            headers: {'content-type': "application/json"});
         if (res.statusCode == 200) {
           ref.watch(userProvider.notifier).update(
               updated: UserRepository(

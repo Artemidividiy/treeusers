@@ -23,8 +23,8 @@ final awaitingServerConnectProvider = FutureProvider<bool>((ref) async {
 });
 
 final awaitingInitializerProvider =
-    FutureProvider<Map<String, bool>>((ref) async {
-  bool isServerConnected = false;
+    FutureProvider<Map<String, bool?>>((ref) async {
+  bool? isServerConnected;
   ref.watch(awaitingServerConnectProvider).when(
       data: (data) => isServerConnected = data,
       error: (obj, trace) => log("something went wrong", error: trace),

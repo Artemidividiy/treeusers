@@ -1,13 +1,14 @@
 import 'dart:developer';
-import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:treefuckers/modules/home/view.dart';
 import 'package:treefuckers/modules/note/components/pick_file.dart';
 import 'package:treefuckers/repositories/user.dart';
 
 import '../../enums/notetype.dart';
 import '../../repositories/note.dart';
+import '../../utils/connect.dart';
 
 final _choiceChip = StateProvider<int>((ref) {
   return 0;
@@ -21,7 +22,7 @@ final _noteProvider = StateProvider<Note>(
 
 class NoteView {
   static Widget create() => _NoteCreateView();
-  static Widget read() => _NoteReadView();
+  static Widget read(Note note) => _NoteReadView(note);
 }
 
 class _NoteCreateView extends ConsumerWidget {
@@ -35,6 +36,7 @@ class _NoteCreateView extends ConsumerWidget {
     return Scaffold(
         body: SafeArea(
       child: Form(
+        key: noteFormKey,
         child: Column(
           children: [
             Text("type"),
@@ -54,6 +56,7 @@ class _NoteCreateView extends ConsumerWidget {
                       Text("Text:"),
                       TextFormField(
                         validator: noteTextValidator,
+                        controller: noteTextController,
                         decoration: InputDecoration(hintText: "Note:"),
                       ),
                     ],
@@ -74,18 +77,23 @@ class _NoteCreateView extends ConsumerWidget {
 
   void submit(WidgetRef ref, BuildContext context) async {
     if (noteFormKey.currentState!.validate()) {
-      Note note = Note(
-          author: ref.read(userProvider.notifier).data,
-          type: ref.read(_choiceChip.notifier).state == 0
-              ? NoteType.String
-              : NoteType.AR,
-          textData:
-              noteTextController.text.isEmpty ? null : noteTextController.text,
-          arData: ref.read(_noteProvider.notifier).state.arData == null
-              ? null
-              : ref.read(_noteProvider.notifier).state.arData);
-      NoteRepository(data: [note]).push(context);
-      Navigator.of(context).pop();
+      try {
+        Note note = Note(
+            id: "posting",
+            author: ref.read(userProvider.notifier).data,
+            type: ref.read(_choiceChip.notifier).state == 0
+                ? NoteType.String
+                : NoteType.AR,
+            textData: noteTextController.text.isEmpty
+                ? null
+                : noteTextController.text,
+            arData: ref.read(_noteProvider.notifier).state.arData == null
+                ? null
+                : ref.read(_noteProvider.notifier).state.arData);
+        NoteRepository(data: [note]).push(context, note);
+      } catch (e) {
+        log(e.toString());
+      }
     }
   }
 
@@ -95,7 +103,8 @@ class _NoteCreateView extends ConsumerWidget {
 }
 
 class _NoteReadView extends ConsumerStatefulWidget {
-  const _NoteReadView({super.key});
+  final Note note;
+  const _NoteReadView(this.note, {super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => __NoteReadViewState();
@@ -104,6 +113,20 @@ class _NoteReadView extends ConsumerStatefulWidget {
 class __NoteReadViewState extends ConsumerState<_NoteReadView> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    print(widget.note);
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.note.textData!),
+          Divider(),
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            Text(
+              "by: ${widget.note.author.data.username}",
+            ),
+          ])
+        ],
+      ),
+    );
   }
 }
