@@ -29,7 +29,9 @@ class _SplashViewState extends ConsumerState<SplashView> {
                 LinearProgressIndicator()
               ],
             )));
-          if (!data['isUserLoaded']!) return AuthView();
+          if (data['isServerConnected'] != null &&
+              data['isServerConnected']! &&
+              !data['isUserLoaded']!) return AuthView();
           if (data['isUserLoaded'] != null &&
               data['isServerConnected'] != null &&
               data['isUserLoaded']! &&
