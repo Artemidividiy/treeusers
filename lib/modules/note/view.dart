@@ -2,9 +2,9 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:treefuckers/modules/home/view.dart';
-import 'package:treefuckers/modules/note/components/pick_file.dart';
-import 'package:treefuckers/repositories/user.dart';
+import 'package:treeusers/modules/home/view.dart';
+import 'package:treeusers/modules/note/components/pick_file.dart';
+import 'package:treeusers/repositories/user.dart';
 
 import '../../enums/notetype.dart';
 import '../../repositories/note.dart';

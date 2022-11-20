@@ -4,10 +4,9 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:treefuckers/modules/home/view.dart';
-import 'package:treefuckers/modules/splash/view.dart';
-import 'package:treefuckers/repositories/user.dart';
 
+import 'modules/splash/view.dart';
+import 'repositories/user.dart';
 import 'utils/connect.dart';
 
 // We create a "provider", which will store a value (here "Hello world").

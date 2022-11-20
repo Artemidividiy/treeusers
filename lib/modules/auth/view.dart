@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'package:treefuckers/main.dart';
-import 'package:treefuckers/modules/auth/components/auth_form.dart';
-import 'package:treefuckers/repositories/user.dart';
+import 'package:treeusers/main.dart';
+import 'package:treeusers/modules/auth/components/auth_form.dart';
+import 'package:treeusers/repositories/user.dart';
 
 import '../home/view.dart';
 import 'components/register_form.dart';

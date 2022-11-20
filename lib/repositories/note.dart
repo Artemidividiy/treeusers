@@ -6,10 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:treefuckers/enums/notetype.dart';
-import 'package:treefuckers/modules/home/view.dart';
-import 'package:treefuckers/repositories/user.dart';
-import 'package:treefuckers/utils/connect.dart';
+import 'package:treeusers/enums/notetype.dart';
+import 'package:treeusers/modules/home/view.dart';
+import 'package:treeusers/repositories/user.dart';
+import 'package:treeusers/utils/connect.dart';
 
 class Note {
   String id;

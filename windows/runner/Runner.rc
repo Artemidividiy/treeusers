@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.uselessxiv" "\0"
-            VALUE "FileDescription", "treefuckers" "\0"
+            VALUE "FileDescription", "treeusers" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "treefuckers" "\0"
+            VALUE "InternalName", "treeusers" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.uselessxiv. All rights reserved." "\0"
-            VALUE "OriginalFilename", "treefuckers.exe" "\0"
-            VALUE "ProductName", "treefuckers" "\0"
+            VALUE "OriginalFilename", "treeusers.exe" "\0"
+            VALUE "ProductName", "treeusers" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

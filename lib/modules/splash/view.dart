@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:treefuckers/main.dart';
-import 'package:treefuckers/modules/auth/view.dart';
-import 'package:treefuckers/modules/home/view.dart';
-import 'package:treefuckers/repositories/user.dart';
+import 'package:treeusers/main.dart';
+import 'package:treeusers/modules/auth/view.dart';
+import 'package:treeusers/modules/home/view.dart';
+import 'package:treeusers/repositories/user.dart';
 
 class SplashView extends StatefulHookConsumerWidget {
   const SplashView({super.key});

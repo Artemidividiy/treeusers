@@ -14,20 +14,20 @@ class Connect {
     final scanner = LanScanner();
     final stream = scanner.icmpScan(subnet, timeout: timeout,
         progressCallback: (progress) {
-      print('${progress * 100}%');
+      log('${progress * 100}%');
     });
     await stream.listen(
       (event) {
         if (event.isReachable) {
           devices[devices.length] = event.ip;
-          print("found device on ${event.ip}");
+          log("found device on ${event.ip}");
         } else
-          print("${event.ip} not found");
+          log("${event.ip} not found");
       },
     ).asFuture();
     for (var device in devices.values) {
       try {
-        print("pinging $device");
+        log("pinging $device");
         var res = await http.get(Uri.parse('http://$device:8080/ping'));
         if (res.body == "treeserver") {
           serverAdress = "http://" + device + ":8080";

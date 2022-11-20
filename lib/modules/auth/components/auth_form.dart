@@ -4,13 +4,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:treefuckers/main.dart';
+import 'package:treeusers/main.dart';
 import 'package:http/http.dart' as http;
-import 'package:treefuckers/repositories/user.dart';
-import 'package:treefuckers/utils/connect.dart';
+import 'package:treeusers/repositories/user.dart';
+import 'package:treeusers/utils/connect.dart';
 
 import '../../home/view.dart';
-
 
 class AuthForm extends HookConsumerWidget {
   final GlobalKey<FormState> authFormKey = GlobalKey<FormState>();

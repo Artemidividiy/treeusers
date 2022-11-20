@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:treefuckers/main.dart';
-import 'package:treefuckers/repositories/user.dart';
+import 'package:treeusers/main.dart';
+import 'package:treeusers/repositories/user.dart';
 
 class SettingsView extends StatefulHookConsumerWidget {
   const SettingsView({super.key});

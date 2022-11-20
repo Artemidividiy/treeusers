@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-import 'package:treefuckers/repositories/user.dart';
+import 'package:treeusers/repositories/user.dart';
 import 'package:http/http.dart' as http;
 import '../../../utils/connect.dart';
 import '../../home/view.dart';
@@ -44,7 +44,7 @@ class RegisterView extends HookConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
-              decoration: InputDecoration(labelText: "username"),
+              decoration: InputDecoration(labelText: "password"),
               autocorrect: false,
               onChanged: (_) => registerFormKey.currentState!.validate(),
               validator: passwordValidator,
@@ -54,7 +54,7 @@ class RegisterView extends HookConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
-              decoration: InputDecoration(labelText: "username"),
+              decoration: InputDecoration(labelText: "confirm password"),
               autocorrect: false,
               onChanged: (_) => registerFormKey.currentState!.validate(),
               validator: passwordConfirmValidator,
